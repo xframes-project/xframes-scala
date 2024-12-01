@@ -11,7 +11,17 @@ plugins {
 
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
+
+shadowJar {
+    archiveBaseName.set("xframes")
+    archiveVersion.set("1.0")
+    archiveClassifier.set("")
+}
+
+mainClassName = "dev.xframes.XFramesWrapperMain"
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -24,6 +34,8 @@ dependencies {
 
     // This dependency is used by the application.
     implementation libs.guava
+
+    implementation 'com.typesafe.play:play-json_2.13:2.10.0'
 
     // Use Scalatest for testing our library
     testImplementation libs.junit
@@ -43,5 +55,13 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'org.example.App'
+    mainClass = 'dev.xframes.XFramesWrapperMain'
+}
+
+task runMain(type: JavaExec) {
+    mainClass = 'dev.xframes.XFramesWrapperMain'
+    classpath = sourceSets.main.runtimeClasspath
+    args = []
+    // todo: // ensure DLLs are moved to a consistent path across operating systems
+    jvmArgs = ['-Djava.library.path=C:\\dev\\xframes-scala\\native']
 }
